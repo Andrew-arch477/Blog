@@ -1,2 +1,2 @@
 # Blog
-A small blog aplication
+Blog aplication
