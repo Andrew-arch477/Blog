@@ -1,0 +1,50 @@
+from django import forms
+from .models import Announcement, Article, User, Tag, Rating, Category, Comment
+from django.contrib.auth.forms import UserCreationForm
+
+class Login_Form(forms.Form):
+    username = forms.CharField(
+        max_length=100,
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={'class': 'form-control'})
+    )
+
+class Registration_Form(UserCreationForm):
+    username = forms.CharField(
+        max_length=150,
+        label='Username:',
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+
+    first_name = forms.CharField(
+        max_length=150,
+        label='First name:',
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+
+    last_name = forms.CharField(
+        max_length=150,
+        label='Last name:',
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+
+    email = forms.EmailField(
+        label='Email:',
+        widget=forms.EmailInput(attrs={'class': 'form-control'})
+    )
+
+    password1 = forms.CharField(
+        label='Password:',
+        widget=forms.PasswordInput(attrs={'class': 'form-control'})
+    )
+
+    password2 = forms.CharField(
+        label='Confirm:',
+        widget=forms.PasswordInput(attrs={'class': 'form-control'})
+    )
+
+    class Meta:
+        model = User
+        fields = ['username', 'first_name' ,'last_name', 'email', 'password1', 'password2']
