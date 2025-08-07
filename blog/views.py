@@ -1,11 +1,11 @@
 from django.shortcuts import redirect
-from django.views.generic.edit import FormView, DeleteView
+from django.views.generic.edit import FormView, DeleteView, UpdateView
 from django.views.generic.base import TemplateView
 from blog.models import Article, Announcement, User, Category, Comment, Rating, Tag
-from blog.forms import Login_Form, Registration_Form
+from blog.forms import Login_Form, Registration_Form, User_Form
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
-#from task_tracking_system.mixins import UserIsOwnerMixin, UserIsOwnerMixinComment
+#from blog.mixins import 
 from django.urls import reverse_lazy
 
 class Login_View(FormView):
@@ -42,6 +42,14 @@ class Logout_View(TemplateView):
 class Main_Page_View(TemplateView):
     template_name = "Main_Page.html"
 
+class Profile_View(LoginRequiredMixin, UpdateView):
+    model = User
+    form_class = User_Form 
+    template_name = 'User_Profile_Page.html'
+    success_url = reverse_lazy('profile_page')
+
+    def get_object(self):
+        return self.request.user
 
 
 

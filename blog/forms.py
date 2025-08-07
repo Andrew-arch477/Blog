@@ -48,3 +48,46 @@ class Registration_Form(UserCreationForm):
     class Meta:
         model = User
         fields = ['username', 'first_name' ,'last_name', 'email', 'password1', 'password2']
+
+ROLE_CHOICES = [
+    ('writer', 'Writer'),
+    ('user', 'User'),
+]
+
+class User_Form(UserCreationForm):
+    first_name = forms.CharField(
+        max_length=150,
+        label='First name:',
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+
+    last_name = forms.CharField(
+        max_length=150,
+        label='Last name:',
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+
+    email = forms.EmailField(
+        label='Email:',
+        widget=forms.EmailInput(attrs={'class': 'form-control'})
+    )
+
+    password1 = forms.CharField(
+        label='Password:',
+        widget=forms.PasswordInput(attrs={'class': 'form-control'})
+    )
+
+    password2 = forms.CharField(
+        label='Confirm:',
+        widget=forms.PasswordInput(attrs={'class': 'form-control'})
+    )
+
+    role = forms.ChoiceField(
+        label='Roles:',
+        choices=ROLE_CHOICES,
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+
+    class Meta:
+        model = User
+        fields = ['first_name' ,'last_name', 'role', 'email', 'password1', 'password2']
