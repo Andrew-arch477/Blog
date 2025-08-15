@@ -68,12 +68,16 @@ class Article_Create_View(LoginRequiredMixin, UserIsWriterMixin, CreateView):
     template_name = "Create_Article.html"
     success_url = "/articles/"
 
-class Article_Detail_View(LoginRequiredMixin, UserIsOwnerMixin, DetailView):
+class Article_Detail_View(LoginRequiredMixin, DetailView):
     model = Article
     template_name = 'Detail_Article.html'
     context_object_name = "article"
 
-
+class Article_Update_View(LoginRequiredMixin, UserIsOwnerMixin, UpdateView):
+    model = Article
+    form_class = Article_Form
+    template_name = "Update_Article.html"
+    success_url = "/articles/"
 
 
 
