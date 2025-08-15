@@ -52,7 +52,7 @@ class Profile_View(LoginRequiredMixin, UpdateView):
     def get_object(self):
         return self.request.user
 
-class Article_List_View(ListView):
+class Article_List_View(LoginRequiredMixin, ListView):
     model = Article
     template_name = 'All_Article.html'
 
@@ -61,8 +61,11 @@ class Article_List_View(ListView):
         context["articles"] = Article.objects.all()
         return context
 
-class Article_Create_View(CreateView):
-    pass
+class Article_Create_View(LoginRequiredMixin, CreateView):
+    model = Article
+    form_class = Article_Form
+    template_name = "Create_Article.html"
+    success_url = "/articles/"
 
 
 
