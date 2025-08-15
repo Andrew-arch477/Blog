@@ -15,22 +15,31 @@
         <h1>Всі Блог</h1>
         <h2>Блоги для всіх та на різні теми.</h2>
     </center>
-
-    <h2>Форма для фільтрації</h2>
     <p></p>
-    <form method="GET">
-        {% csrf_token %}
-  
-        <div id = 'form-container'>
-            {{ form.as_p }}
-            <p></p>
-            <button type="submit", class="btn btn-primary">Шукати</button> 
-        </div>
-    </form>
-    <p></p>
+    <center>
+        <h2>Список найновіших блогів</h2>
+    </center>
 
     <center>
-        <h2>Список блогів</h2>
+        <div class='row'>
+            {% for article in articles %}
+            <div class="col-12 mb-3">
+                <p></p>
+                <h2>
+                    {{ article.name }}
+                    {% for category in article.category.all %}
+                        {{ category.name }}
+                    {% endfor %}
+
+                    {% for tag in article.tags.all %}
+                        {{ tag.name }}
+                    {% endfor %}
+                </h2>
+                <a href="{% url 'articles_detail_page' article.pk %}"><button class="btn btn-primary">Детальніше</button></a>
+                <p></p>
+            </div>
+            {% endfor %}
+        </div>
     </center>
 
     <center>

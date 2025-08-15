@@ -39,6 +39,8 @@ class Article(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     stage = models.CharField(max_length=6, choices=STAGE_CHOICES, default='skatch')
 
+    created_at = models.DateTimeField(auto_now_add=True)
+
     def rating_average(self):
         return self.ratings.aggregate(avg=Avg('rate'))['avg'] or 0
     

@@ -41,8 +41,14 @@ class Logout_View(TemplateView):
         logout(request)
         return redirect('/login/')
 
-class Main_Page_View(TemplateView):
+class Main_Page_View(ListView):
+    model = Article
     template_name = "Main_Page.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["articles"] = Article.objects.all().order_by('-created_at')[:5]
+        return context
 
 class Profile_View(LoginRequiredMixin, UpdateView):
     model = User
