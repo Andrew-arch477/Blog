@@ -1,8 +1,9 @@
 from django.shortcuts import redirect
-from django.views.generic.edit import FormView, DeleteView, UpdateView
+from django.views.generic.edit import FormView, DeleteView, UpdateView, CreateView
 from django.views.generic.base import TemplateView
+from django.views.generic.list import ListView
 from blog.models import Article, Announcement, User, Category, Comment, Rating, Tag
-from blog.forms import Login_Form, Registration_Form, User_Form
+from blog.forms import Login_Form, Registration_Form, User_Form, Article_Form
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 #from blog.mixins import 
@@ -51,7 +52,17 @@ class Profile_View(LoginRequiredMixin, UpdateView):
     def get_object(self):
         return self.request.user
 
+class Article_List_View(ListView):
+    model = Article
+    template_name = 'All_Article.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["articles"] = Article.objects.all()
+        return context
+
+class Article_Create_View(CreateView):
+    pass
 
 
 
