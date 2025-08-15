@@ -79,8 +79,10 @@ class Article_Update_View(LoginRequiredMixin, UserIsOwnerMixin, UpdateView):
     template_name = "Update_Article.html"
     success_url = "/articles/"
 
-
-
+class Article_Delete_View(LoginRequiredMixin, UserIsOwnerMixin, DeleteView):
+    model = Article
+    template_name = "Delete_Article.html"
+    success_url = "/articles/"
 
 
 
