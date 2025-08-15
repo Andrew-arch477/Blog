@@ -91,3 +91,8 @@ class User_Form(UserCreationForm):
     class Meta:
         model = User
         fields = ['first_name' ,'last_name', 'role', 'email', 'password1', 'password2']
+
+class Article_Form(forms.ModelForm):
+    class Meta:
+        model = Article
+        fields = "__all__"
