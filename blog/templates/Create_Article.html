@@ -15,26 +15,30 @@
         <h1>Робоче місце</h1>
     </center>
 
-    <div class="container my-4">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h3 class="card-title text-center mb-4">Надіслати статтю</h3>
 
-                <form method="POST">
-                    {% csrf_token %}
-                    
-                    <div class="mb-3">
-                        {{ form.as_p }}
-                    </div>
-
-                    <div class="text-center">
-                        <button type="submit" class="btn btn-success">Відправити</button>
-                        <a href="{% url 'articles_page' %}" class="btn btn-secondary">Назад</a>
-                    </div>
-
-                </form>
+          <form method="POST">
+            {% csrf_token %}
+            <div class="mb-3">
+              {{ form.as_p }}
             </div>
+
+            <div class="d-flex justify-content-center gap-3 mt-4">
+              <button type="submit" class="btn btn-success">Відправити</button>
+              <a href="{% url 'articles_page' %}" class="btn btn-secondary">Назад</a>
+            </div>
+          </form>
+
         </div>
+      </div>
     </div>
+  </div>
+</div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
 
