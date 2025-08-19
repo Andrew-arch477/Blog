@@ -36,6 +36,7 @@
         {% else %}
         <p></p>
         {% endif %}
+        <a href="{% url 'comments_page' article.id %}"><button style="background-color: cadetblue; color:white" class="btn">Коментарі</button></a>
         <a href="{% url 'articles_page' %}"><button type="submit", class="btn btn-secondary">Назад</button></a>
     </div>
 

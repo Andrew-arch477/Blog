@@ -95,4 +95,9 @@ class User_Form(UserCreationForm):
 class Article_Form(forms.ModelForm):
     class Meta:
         model = Article
-        fields = "__all__"
+        fields = ['name', 'text', 'category', 'tags', 'stage']
+
+class Comment_Form(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['text']

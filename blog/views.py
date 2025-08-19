@@ -1,10 +1,10 @@
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.views.generic.edit import FormView, DeleteView, UpdateView, CreateView
 from django.views.generic.base import TemplateView
 from django.views.generic import DetailView
 from django.views.generic.list import ListView
 from blog.models import Article, Announcement, User, Category, Comment, Rating, Tag
-from blog.forms import Login_Form, Registration_Form, User_Form, Article_Form
+from blog.forms import Login_Form, Registration_Form, User_Form, Article_Form, Comment_Form
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from blog.mixins import UserIsAdminMixin, UserIsOwnerMixin, UserIsWriterMixin
@@ -74,6 +74,10 @@ class Article_Create_View(LoginRequiredMixin, UserIsWriterMixin, CreateView):
     template_name = "Create_Article.html"
     success_url = "/articles/"
 
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
 class Article_Detail_View(LoginRequiredMixin, DetailView):
     model = Article
     template_name = 'Detail_Article.html'
@@ -90,7 +94,25 @@ class Article_Delete_View(LoginRequiredMixin, UserIsOwnerMixin, DeleteView):
     template_name = "Delete_Article.html"
     success_url = "/articles/"
 
+class Comment_View(LoginRequiredMixin, CreateView):
+    template_name = 'Comments_For_Article.html'
+    form_class = Comment_Form
+    success_url = reverse_lazy('articles_page')
 
+    def dispatch(self, request, *args, **kwargs):
+        self.article = get_object_or_404(Article, pk=self.kwargs['pk'])
+        return super().dispatch(request, *args, **kwargs)
+    
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        form.instance.article = self.article
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['article'] = self.article
+        context['comments'] = Comment.objects.filter(article=self.article)
+        return context
 
 
 
