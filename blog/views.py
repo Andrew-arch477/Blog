@@ -120,6 +120,10 @@ class Comment_Update_View(LoginRequiredMixin, UserIsOwnerMixin, UpdateView):
     template_name = "Update_Comment.html"
     success_url = "/articles/"
 
+class Comment_Delete_View(LoginRequiredMixin, UserIsOwnerMixin, DeleteView):
+    model = Comment
+    template_name = "Delete_Comment.html"
+    success_url = "/articles/"
 
 
 

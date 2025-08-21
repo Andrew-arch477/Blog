@@ -24,7 +24,7 @@
             <h4>{{ comment.user }}</h4>
             <p class="card-text">{{ comment.text }}</p>
             <a href="{% url 'comment_update_page' comment.id%}"><button class="btn btn-warning">Редагувати</button></a>
-            <a href=""><button class="btn btn-danger">Видалити</button></a>
+            <a href="{% url 'comment_delete_page' comment.id%}"><button class="btn btn-danger">Видалити</button></a>
         </div>
         </div>
     </div>
