@@ -13,6 +13,7 @@ urlpatterns = [
     path('articles/delete_article/<int:pk>/', views.Article_Delete_View.as_view(), name='articles_delete_page'),
 
     path('comment_to_article/<int:pk>/', views.Comment_View.as_view(), name='comments_page'),
+    path('comment_to_article/comment_update/<int:pk>/', views.Comment_Update_View.as_view(), name='comment_update_page'),
 
     path('login/', views.Login_View.as_view(), name='login_page'),
     path('logout/', views.Logout_View.as_view(), name='logout_page'),

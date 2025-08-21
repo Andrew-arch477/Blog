@@ -114,8 +114,11 @@ class Comment_View(LoginRequiredMixin, CreateView):
         context['comments'] = Comment.objects.filter(article=self.article)
         return context
 
-
-
+class Comment_Update_View(LoginRequiredMixin, UserIsOwnerMixin, UpdateView):
+    model = Comment
+    form_class = Comment_Form
+    template_name = "Update_Comment.html"
+    success_url = "/articles/"
 
 
 
