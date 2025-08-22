@@ -4,7 +4,7 @@ from django.views.generic.base import TemplateView
 from django.views.generic import DetailView
 from django.views.generic.list import ListView
 from blog.models import Article, Announcement, User, Category, Comment, Rating, Tag
-from blog.forms import Login_Form, Registration_Form, User_Form, Article_Form, Comment_Form
+from blog.forms import Login_Form, Registration_Form, User_Form, Article_Form, Comment_Form, Article_Filtration_Form
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from blog.mixins import UserIsAdminMixin, UserIsOwnerMixin, UserIsWriterMixin
@@ -62,10 +62,33 @@ class Profile_View(LoginRequiredMixin, UpdateView):
 class Article_List_View(LoginRequiredMixin, ListView):
     model = Article
     template_name = 'All_Article.html'
+    context_object_name = 'articles'
+
+    def get_queryset(self):
+        queryset = Article.objects.all().prefetch_related('category', 'tags')
+        self.form = Article_Filtration_Form(self.request.GET)
+
+        if self.form.is_valid():
+            data = self.form.cleaned_data
+            name = data.get("name")
+            stage = data.get("stage")
+            category = data.get("category")
+            tags = data.get("tags")
+
+            if name:
+                queryset = queryset.filter(name__icontains=name)
+            if stage:
+                queryset = queryset.filter(stage=stage)
+            if category:
+                queryset = queryset.filter(category=category)
+            if tags:
+                queryset = queryset.filter(tags=tags)
+
+        return queryset.distinct()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["articles"] = Article.objects.all()
+        context["form"] = self.form
         return context
 
 class Article_Create_View(LoginRequiredMixin, UserIsWriterMixin, CreateView):

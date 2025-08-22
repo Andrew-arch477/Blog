@@ -97,6 +97,12 @@ class Article_Form(forms.ModelForm):
         model = Article
         fields = ['name', 'text', 'category', 'tags', 'stage']
 
+class Article_Filtration_Form(forms.Form):
+    name = forms.CharField(required=False)
+    stage = forms.ChoiceField(choices=Article.STAGE_CHOICES, required=False)
+    category = forms.ModelMultipleChoiceField(queryset=Category.objects.all(), required=False)
+    tags = forms.ModelMultipleChoiceField(queryset=Tag.objects.all(), required=False)
+
 class Comment_Form(forms.ModelForm):
     class Meta:
         model = Comment

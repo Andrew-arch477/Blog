@@ -14,25 +14,45 @@
         <h1 class="text-white bg-dark">Усі блоги нашого сайту</h1>
     </center>
 
-    <div class="row">
-        {% for article in articles %}
-        <div class="col-12 mb-3">
-            <h2 class="mb-2">{{ article.name }}</h2>
-
-            <div class="mb-3">
-                {% for category in article.category.all %}
-                    <span class="badge bg-secondary me-1" style="font-size: 1.25rem; padding: 0.3rem 0.8rem;">{{ category.name }}</span>
-                {% endfor %}
-
-                {% for tag in article.tags.all %}
-                    <span class="text-primary me-2" style="font-size: 1.25rem;">{{ tag.name }}</span>
-                {% endfor %}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h2>Форма для фільтрації</h2>
+                <p></p>
+                <form method="GET">
+                    {% csrf_token %}
+                    <div id = 'form-container'>
+                        {{ form.as_p }}
+                        <p></p>
+                        <button type="submit", class="btn btn-primary">Шукати</button> 
+                    </div>
+                </form>
+                <p></p>
             </div>
 
-            <a href="{% url 'articles_detail_page' article.pk %}"><button class="btn btn-primary">Детальніше</button></a>
-            <p></p>
+            <div class="col">
+                <div class="row">
+                    {% for article in articles %}
+                    <div class="col-12 mb-3">
+                        <h2 class="mb-2">{{ article.name }}</h2>
+
+                        <div class="mb-3">
+                            {% for category in article.category.all %}
+                                <span class="badge bg-secondary me-1" style="font-size: 1.25rem; padding: 0.3rem 0.8rem;">{{ category.name }}</span>
+                            {% endfor %}
+
+                            {% for tag in article.tags.all %}
+                                <span class="text-primary me-2" style="font-size: 1.25rem;">{{ tag.name }}</span>
+                            {% endfor %}
+                        </div>
+
+                        <a href="{% url 'articles_detail_page' article.pk %}"><button class="btn btn-primary">Детальніше</button></a>
+                        <p></p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
         </div>
-        {% endfor %}
     </div>
 
     <p></p>
