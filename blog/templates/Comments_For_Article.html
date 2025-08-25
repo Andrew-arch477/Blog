@@ -15,35 +15,79 @@
     </center>
     <p></p>
 
-    {% for comment in comments %}
-    <div class="row">
-    <div class="col-sm-6">
-        <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">{{ article.name }}</h5>
-            <h4>{{ comment.user }}</h4>
-            <p class="card-text">{{ comment.text }}</p>
-            <a href="{% url 'comment_update_page' comment.id%}"><button class="btn btn-warning">Редагувати</button></a>
-            <a href="{% url 'comment_delete_page' comment.id%}"><button class="btn btn-danger">Видалити</button></a>
-        </div>
-        </div>
+    <div id="comments-container">
+            {% for comment in comments %}
+            <div class="row comment mb-2" id="comment-{{ comment.id }}">
+                <div class="col-sm-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ article.name }}</h5>
+                            <h4>{{ comment.user }}</h4>
+                            <p class="card-text">{{ comment.text }}</p>
+                            <a href="{% url 'comment_update_page' comment.id %}">
+                                <button class="btn btn-warning">Редагувати</button>
+                            </a>
+                            <a href="{% url 'comment_delete_page' comment.id %}">
+                                <button class="btn btn-danger">Видалити</button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
     </div>
+
     <p></p>
-    {% endfor %}
-    <p></p>
-    <form method="POST">
+    <form id="comment-form" method="POST">
         {% csrf_token %}
-        <div class="form-group">
-            {{ form.as_p }}
-            <center>
-                <button type="submit", class="btn btn-success">Надіслати</button>
-            </center>
-        </div>
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-success">Надіслати</button>
     </form>
     <p></p>
     <center>
         <a href="{% url 'articles_page' %}"><button class="btn btn-secondary">Назад</button></a>
     </center>
+
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script>
+    $(document).ready(function() {
+        $('#comment-form').submit(function(e) {
+            e.preventDefault(); // Prevent page reload
+
+            $.ajax({
+                type: 'POST',
+                url: '', // current page
+                data: $(this).serialize(),
+                success: function(response) {
+                    $('#comments-container').append(`
+                        <div class="row comment mb-2" id="comment-${response.id}">
+                            <div class="col-sm-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">${response.article_name}</h5>
+                                        <h4>${response.user}</h4>
+                                        <p class="card-text">${response.text}</p>
+                                        <a href="/comment_to_article/comment_update/${response.id}/">
+                                            <button class="btn btn-warning">Редагувати</button>
+                                        </a>
+                                        <a href="/comment_to_article/comment_delete/${response.id}/">
+                                            <button class="btn btn-danger">Видалити</button>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `);
+                    $('#comment-form')[0].reset(); // Clear form
+                },
+                error: function() {
+                    alert('Помилка! Спробуйте ще раз.');
+                }
+            });
+        });
+    });
+    </script>
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
 

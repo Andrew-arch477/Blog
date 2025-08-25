@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blog</title>
     <link rel="stylesheet" href="{% static 'styles/first.css' %}">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
 <body class="p-3 mb-2 bg-white text-black">
@@ -19,37 +20,40 @@
             <div class="col">
                 <h2>Форма для фільтрації</h2>
                 <p></p>
-                <form method="GET">
+                <form id="filter-form" method="GET">
                     {% csrf_token %}
-                    <div id = 'form-container'>
+                    <div id="form-container">
                         {{ form.as_p }}
                         <p></p>
-                        <button type="submit", class="btn btn-primary">Шукати</button> 
+                        <button type="submit" class="btn btn-primary">Шукати</button>
                     </div>
                 </form>
                 <p></p>
             </div>
 
             <div class="col">
-                <div class="row">
-                    {% for article in articles %}
-                    <div class="col-12 mb-3">
-                        <h2 class="mb-2">{{ article.name }}</h2>
-
-                        <div class="mb-3">
-                            {% for category in article.category.all %}
-                                <span class="badge bg-secondary me-1" style="font-size: 1.25rem; padding: 0.3rem 0.8rem;">{{ category.name }}</span>
-                            {% endfor %}
-
-                            {% for tag in article.tags.all %}
-                                <span class="text-primary me-2" style="font-size: 1.25rem;">{{ tag.name }}</span>
-                            {% endfor %}
+                <div id="articles-container">
+                    <div class="row">
+                        {% for article in articles %}
+                        <div class="col-12 mb-3">
+                            <h2 class="mb-2">{{ article.name }}</h2>
+                            <div class="mb-3">
+                                {% for category in article.category.all %}
+                                    <span class="badge bg-secondary me-1" style="font-size: 1.25rem; padding: 0.3rem 0.8rem;">{{ category.name }}</span>
+                                {% endfor %}
+                                {% for tag in article.tags.all %}
+                                    <span class="text-primary me-2" style="font-size: 1.25rem;">{{ tag.name }}</span>
+                                {% endfor %}
+                            </div>
+                            <a href="{% url 'articles_detail_page' article.pk %}">
+                                <button class="btn btn-primary">Детальніше</button>
+                            </a>
+                            <p></p>
                         </div>
-
-                        <a href="{% url 'articles_detail_page' article.pk %}"><button class="btn btn-primary">Детальніше</button></a>
-                        <p></p>
+                        {% empty %}
+                        <p class="text-danger">Немає статей за вашим запитом.</p>
+                        {% endfor %}
                     </div>
-                    {% endfor %}
                 </div>
             </div>
         </div>
@@ -58,15 +62,32 @@
     <p></p>
 
     <center>
-        <p></p>
-        <a href="{% url 'articles_create_page' %}"><button class="btn btn-success"><h2>Створити новий блог</h2></button></a>
+        <a href="{% url 'articles_create_page' %}">
+            <button class="btn btn-success"><h2>Створити новий блог</h2></button>
+        </a>
     </center>
-
+    <p></p>
     <center>
-        <p></p>
-        <a href="{% url 'main_page' %}"><button class="btn btn-secondary"><h3>Назад</h3></button></a>
+        <a href="{% url 'main_page' %}">
+            <button class="btn btn-secondary"><h3>Назад</h3></button>
+        </a>
     </center>
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
 
+    <script>
+        $(document).on('submit', '#filter-form', function(e) {
+            e.preventDefault();
+            $.ajax({
+                type: 'GET',
+                url: '',
+                data: $(this).serialize(),
+                success: function(response) {
+                    let htmlContent = $(response.html).find('#articles-container').html();
+                    $('#articles-container').html(htmlContent);
+                }
+            });
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+</html>

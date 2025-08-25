@@ -1,4 +1,6 @@
 from django.shortcuts import get_object_or_404, redirect
+from django.http import JsonResponse
+from django.template.loader import render_to_string
 from django.views.generic.edit import FormView, DeleteView, UpdateView, CreateView
 from django.views.generic.base import TemplateView
 from django.views.generic import DetailView
@@ -70,7 +72,7 @@ class Article_List_View(LoginRequiredMixin, ListView):
 
         if self.form.is_valid():
             data = self.form.cleaned_data
-            name = data.get("name")
+            name = (data.get("name") or '').strip()
             stage = data.get("stage")
             category = data.get("category")
             tags = data.get("tags")
@@ -88,8 +90,14 @@ class Article_List_View(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["form"] = self.form
+        context['form'] = self.form
         return context
+
+    def render_to_response(self, context, **response_kwargs):
+        if self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            html = render_to_string('All_Article.html', context=self.get_context_data(), request=self.request)
+            return JsonResponse({'html': html})
+        return super().render_to_response(context, **response_kwargs)
 
 class Article_Create_View(LoginRequiredMixin, UserIsWriterMixin, CreateView):
     model = Article
@@ -120,7 +128,7 @@ class Article_Delete_View(LoginRequiredMixin, UserIsOwnerMixin, DeleteView):
 class Comment_View(LoginRequiredMixin, CreateView):
     template_name = 'Comments_For_Article.html'
     form_class = Comment_Form
-    success_url = reverse_lazy('articles_page')
+    # success_url = reverse_lazy('articles_page')
 
     def dispatch(self, request, *args, **kwargs):
         self.article = get_object_or_404(Article, pk=self.kwargs['pk'])
@@ -129,7 +137,14 @@ class Comment_View(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         form.instance.article = self.article
-        return super().form_valid(form)
+        comment = form.save()
+
+        return JsonResponse({
+            'id': form.instance.id,
+            'user': form.instance.user.username,
+            'text': form.instance.text,
+            'article_name': form.instance.article.name
+        })
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
