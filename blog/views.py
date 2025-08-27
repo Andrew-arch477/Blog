@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404, redirect
 from django.http import JsonResponse
+from django.core.paginator import Paginator, EmptyPage
 from django.template.loader import render_to_string
 from django.views.generic.edit import FormView, DeleteView, UpdateView, CreateView
 from django.views.generic.base import TemplateView
@@ -65,10 +66,11 @@ class Article_List_View(LoginRequiredMixin, ListView):
     model = Article
     template_name = 'All_Article.html'
     context_object_name = 'articles'
+    paginate_by = 3
 
     def get_queryset(self):
-        queryset = Article.objects.all().prefetch_related('category', 'tags')
-        self.form = Article_Filtration_Form(self.request.GET)
+        queryset = Article.objects.all().prefetch_related('category', 'tags').order_by('-id')
+        self.form = Article_Filtration_Form(self.request.GET or None)
 
         if self.form.is_valid():
             data = self.form.cleaned_data
@@ -93,9 +95,18 @@ class Article_List_View(LoginRequiredMixin, ListView):
         context['form'] = self.form
         return context
 
+    def paginate_queryset(self, queryset, page_size):
+        paginator = Paginator(queryset, page_size)
+        page = self.request.GET.get('page') or 1
+        try:
+            page_obj = paginator.page(page)
+        except EmptyPage:
+            page_obj = paginator.page(paginator.num_pages) 
+        return (paginator, page_obj, page_obj.object_list, page_obj.has_other_pages())
+
     def render_to_response(self, context, **response_kwargs):
         if self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            html = render_to_string('All_Article.html', context=self.get_context_data(), request=self.request)
+            html = render_to_string(self.template_name, context=context, request=self.request)
             return JsonResponse({'html': html})
         return super().render_to_response(context, **response_kwargs)
 
@@ -128,7 +139,6 @@ class Article_Delete_View(LoginRequiredMixin, UserIsOwnerMixin, DeleteView):
 class Comment_View(LoginRequiredMixin, CreateView):
     template_name = 'Comments_For_Article.html'
     form_class = Comment_Form
-    # success_url = reverse_lazy('articles_page')
 
     def dispatch(self, request, *args, **kwargs):
         self.article = get_object_or_404(Article, pk=self.kwargs['pk'])
