@@ -32,6 +32,9 @@
                         <div class="col-12 mb-3">
                             <div class="card shadow-sm">
                                 <div class="card-body">
+                                    {%if article.image%}
+                                        <img src="{{ article.image.url }}" class="img-fluid mb-2" alt="{{ article.name }}">
+                                    {% endif %}
                                     <h4 class="card-title">{{ article.name }}</h4>
                                     <div class="mb-2">
                                         {% for category in article.category.all %}

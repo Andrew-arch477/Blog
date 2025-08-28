@@ -95,7 +95,7 @@ class User_Form(UserCreationForm):
 class Article_Form(forms.ModelForm):
     class Meta:
         model = Article
-        fields = ['name', 'text', 'category', 'tags', 'stage']
+        fields = ['name', 'text', 'image', 'category', 'tags', 'stage']
 
 class Article_Filtration_Form(forms.Form):
     name = forms.CharField(required=False)

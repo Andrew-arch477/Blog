@@ -26,6 +26,9 @@
         <div class="row">
             {% for article in articles %}
             <div class="col-12 mb-3">
+                {%if article.image%}
+                    <img src="{{ article.image.url }}" class="img-fluid mb-2" alt="{{ article.name }}">
+                {% endif %}
                 <h1 class="mb-2">{{ article.name }}</h1>
 
                 <div class="mb-3">

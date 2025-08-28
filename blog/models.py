@@ -36,6 +36,7 @@ class Article(models.Model):
     text = models.TextField()
     category = models.ManyToManyField(Category, related_name='article', blank=True)
     tags = models.ManyToManyField(Tag, related_name='article', blank=True)
+    image = models.ImageField(upload_to='image_preview/', null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     stage = models.CharField(max_length=6, choices=STAGE_CHOICES, default='skatch')
 
@@ -43,6 +44,19 @@ class Article(models.Model):
 
     def rating_average(self):
         return self.ratings.aggregate(avg=Avg('rate'))['avg'] or 0
+    
+    def delete(self):
+        self.image.delete()
+        super().delete()
+    
+    def save(self, *args, **kwargs):
+        try:
+            old_instance = Article.objects.get(pk=self.pk)
+            if old_instance.image and old_instance.image != self.image:
+                old_instance.image.delete(save=False)
+        except Article.DoesNotExist:
+            pass
+        super().save(*args, **kwargs)
     
     def __str__(self):
         return self.name

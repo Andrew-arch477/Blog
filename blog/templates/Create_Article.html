@@ -22,7 +22,7 @@
         <div class="card-body">
           <h3 class="card-title text-center mb-4">Надіслати статтю</h3>
 
-          <form method="POST">
+          <form method="POST", enctype="multipart/form-data">
             {% csrf_token %}
             <div class="mb-3">
               {{ form.as_p }}
