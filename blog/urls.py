@@ -22,4 +22,7 @@ urlpatterns = [
     path('logout/', views.Logout_View.as_view(), name='logout_page'),
     path('registration/', views.Registration_View.as_view(), name='registration_page'),
     path('profile/', views.Profile_View.as_view(), name='profile_page'),
+
+    path('announcements/', views.Announcement_List_View.as_view(), name='announcements_page'),
+
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

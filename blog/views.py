@@ -173,7 +173,14 @@ class Comment_Delete_View(LoginRequiredMixin, UserIsOwnerMixin, DeleteView):
     template_name = "Delete_Comment.html"
     success_url = "/articles/"
 
+class Announcement_List_View(LoginRequiredMixin, ListView):
+    model = Announcement
+    template_name = 'Announcements_page.html'
+    context_object_name = 'announcements'
+    paginate_by = 2
 
+    def get_queryset(self):
+        return Announcement.objects.all().order_by('id')
 
 
 
