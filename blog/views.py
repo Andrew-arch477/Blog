@@ -7,7 +7,7 @@ from django.views.generic.base import TemplateView
 from django.views.generic import DetailView
 from django.views.generic.list import ListView
 from blog.models import Article, Announcement, User, Category, Comment, Rating, Tag
-from blog.forms import Login_Form, Registration_Form, User_Form, Article_Form, Comment_Form, Article_Filtration_Form
+from blog.forms import Login_Form, Registration_Form, User_Form, Article_Form, Comment_Form, Article_Filtration_Form, Rate_Article_Form
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from blog.mixins import UserIsAdminMixin, UserIsOwnerMixin, UserIsWriterMixin
@@ -201,7 +201,17 @@ class Announcement_List_View(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return Announcement.objects.all().order_by('id')
 
+class Article_Rate_View(LoginRequiredMixin, CreateView):
+    model = Rating
+    form_class = Rate_Article_Form
+    template_name = "Rate_Article.html"
+    success_url = "/articles/"
 
+    def form_valid(self, form):  
+        form.instance.user = self.request.user
+        article = get_object_or_404(Article, pk=self.kwargs['pk'])
+        form.instance.article = article
+        return super().form_valid(form)
 
 
 

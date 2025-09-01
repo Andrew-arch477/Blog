@@ -28,6 +28,11 @@
             {% endfor %}
         </p>
 
+        <p style="font-size: 1.7rem;">
+            Рейтинг:
+            {{ article.rating_average }}
+        </p>
+
         <p style="word-wrap: break-word; overflow-wrap: break-word; font-size: 1.3em;">{{ article.text }}</p>
 
         {% if article.user == request.user%}
@@ -37,6 +42,7 @@
         <p></p>
         {% endif %}
         <a href="{% url 'comments_page' article.id %}"><button style="background-color: cadetblue; color:white" class="btn">Коментарі</button></a>
+        <a href="{% url 'articles_rate_page' article.id %}"><button style="background-color: rgb(173, 130, 50); color:white" class="btn">Додати оцінку</button></a>
 
         {% if article.user.role == "writer" and article.user != request.user %}
             <form method="post">

@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import AbstractUser
 from django.db.models import Avg
 
@@ -64,7 +65,7 @@ class Article(models.Model):
         return self.name
 
 class Rating(models.Model):
-    rate = models.IntegerField()
+    rate = models.IntegerField(validators=[MaxValueValidator(10), MinValueValidator(0)])
     article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='ratings')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 

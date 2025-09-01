@@ -13,6 +13,10 @@ urlpatterns = [
     path('articles/article_create/', views.Article_Create_View.as_view(), name='articles_create_page'),
     path('articles/update_article/<int:pk>/', views.Article_Update_View.as_view(), name='articles_update_page'),
     path('articles/delete_article/<int:pk>/', views.Article_Delete_View.as_view(), name='articles_delete_page'),
+    path('articles/rate/<int:pk>/', views.Article_Rate_View.as_view(), name='articles_rate_page'),
+
+    # path('articles/update_article/<int:pk>/', views.Article_Update_View.as_view(), name='articles_update_page'),
+    # path('articles/delete_article/<int:pk>/', views.Article_Delete_View.as_view(), name='articles_delete_page'),
 
     path('comment_to_article/<int:pk>/', views.Comment_View.as_view(), name='comments_page'),
     path('comment_to_article/comment_update/<int:pk>/', views.Comment_Update_View.as_view(), name='comment_update_page'),

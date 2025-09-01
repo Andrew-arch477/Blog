@@ -107,3 +107,8 @@ class Comment_Form(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ['text']
+
+class Rate_Article_Form(forms.ModelForm):
+    class Meta:
+        model = Rating
+        fields = ['rate']
