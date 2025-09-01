@@ -37,6 +37,22 @@
         <p></p>
         {% endif %}
         <a href="{% url 'comments_page' article.id %}"><button style="background-color: cadetblue; color:white" class="btn">Коментарі</button></a>
+
+        {% if article.user.role == "writer" and article.user != request.user %}
+            <form method="post">
+                {% csrf_token %}
+                {% if is_subscribed %}
+                    <p></p>
+                    <button type="submit" style="background-color: rgb(150, 119, 119); color:white" class="btn">Відписатися від автора</button>
+                    <p></p>
+                {% else %}
+                    <p></p>
+                    <button type="submit" style="background-color: rgb(194, 193, 223); color:rgb(0, 0, 0)" class="btn">Підписатися на автора</button>
+                    <p></p>
+                {% endif %}
+            </form>
+        {% endif %}
+        
         <a href="{% url 'articles_page' %}"><button type="submit", class="btn btn-secondary">Назад</button></a>
     </div>
 

@@ -11,7 +11,7 @@ from blog.forms import Login_Form, Registration_Form, User_Form, Article_Form, C
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from blog.mixins import UserIsAdminMixin, UserIsOwnerMixin, UserIsWriterMixin
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 
 class Login_View(FormView):
     template_name = "Login.html"
@@ -50,7 +50,7 @@ class Main_Page_View(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["articles"] = Article.objects.all().order_by('-created_at')[:5]
+        context["articles"] = Article.objects.order_by('-created_at')[:5]
         return context
 
 class Profile_View(LoginRequiredMixin, UpdateView):
@@ -124,6 +124,25 @@ class Article_Detail_View(LoginRequiredMixin, DetailView):
     model = Article
     template_name = 'Detail_Article.html'
     context_object_name = "article"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        writer = self.object.user
+        user = self.request.user
+        context['is_subscribed'] = writer and writer in user.subscription.all()
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        writer = self.object.user
+
+        if writer and writer.role == 'writer' and writer != request.user:
+            if writer in request.user.subscription.all():
+                request.user.subscription.remove(writer)
+            else:
+                request.user.subscription.add(writer)
+
+        return redirect(reverse('articles_detail_page', args=[self.object.pk]))
 
 class Article_Update_View(LoginRequiredMixin, UserIsOwnerMixin, UpdateView):
     model = Article

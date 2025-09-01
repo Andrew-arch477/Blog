@@ -9,6 +9,8 @@ class User(AbstractUser):
         ('user', 'User'),
     ]
 
+    subscription = models.ManyToManyField('self', symmetrical=False, related_name='subscribers', limit_choices_to={'role': 'writer'}, blank=True)
+
     role = models.CharField(max_length=6, choices=ROLE_CHOICES, default='user')
 
     def full_name(self):
