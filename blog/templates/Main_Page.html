@@ -11,63 +11,79 @@
 
 <body>
 
-    <center>
-        <div class="text-white bg-dark">
+    <div class="bg-dark text-white position-relative p-3">
+        <div class="text-center">
             <h1>Всі Блог</h1>
             <h2>Блоги для всіх та на різні теми</h2>
         </div>
-    </center>
+
+        <div class="position-absolute top-0 start-0 p-3">
+            <div class="mb-3 d-flex align-items-center gap-2">
+                <span style="font-size: 1.5rem; color: white;">☰</span>
+                <a href="/articles/"><button class="btn text-white"><h3>Більше блогів</h3></button></a>
+            </div>
+
+            <div class="d-flex align-items-center gap-2">
+                <span style="font-size: 1.5rem; color: white;">&#128240;</span>
+                <a href="/announcements/"><button class="btn text-white"><h3>Новинни/Оголошення</h3></button></a>
+            </div>
+        </div>
+
+        <div class="position-absolute top-0 end-0 p-3 shadow" 
+            style="border: 1px solid white; background-color: #212529;">
+            <div class="d-flex align-items-center gap-3">
+                <h2 class="mb-0">Вхід та реєстрація</h2>
+                {% if user.is_authenticated %}
+                <a href="/logout/" class="btn btn-warning">Вихід</a>
+                <a href="/profile/" class="btn btn-info">Профіль</a>
+                {% else %}
+                <a href="/login/" class="btn btn-info">Вхід</a>
+                {% endif %}
+                <a href="/registration/" class="btn btn-secondary">Реєстрація</a>
+            </div>
+        </div>
+    </div>
+
     <p></p>
+
     <center>
         <h2>Список найновіших блогів нашого ресурсу:</h2>
     </center>
 
-    <center>
-        <div class="row">
-            {% for article in articles %}
-            <div class="col-12 mb-3">
-                {%if article.image%}
-                    <img src="{{ article.image.url }}" class="img-fluid mb-2" alt="{{ article.name }}">
-                {% endif %}
-                <h1 class="mb-2">{{ article.name }}</h1>
+    <div class="container">
+        <div id="articles-container">
+            <div class="row">
+                {% for article in articles %}
+                <div class="col-11 mb-3">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h3 class="card-title">{{ article.name }}</h3>
 
-                <div class="mb-3">
-                    {% for category in article.category.all %}
-                        <span class="badge bg-secondary me-1" style="font-size: 1.25rem; padding: 0.3rem 0.8rem;">{{ category.name }}</span>
-                    {% endfor %}
+                            <div class="row g-2 align-items-start">
+                                {% if article.image %}
+                                <div class="col-md-4">
+                                    <img src="{{ article.image.url }}" class="img-fluid mb-2" alt="{{ article.name }}" style="width:350px;height:350px;">
+                                </div>
+                                {% endif %}
 
-                    {% for tag in article.tags.all %}
-                        <span class="text-primary me-2" style="font-size: 1.25rem;">{{ tag.name }}</span>
-                    {% endfor %}
+                                <div class="col-md-8">
+                                    <div class="mb-2">
+                                        {% for category in article.category.all %}
+                                            <span class="badge bg-secondary me-1"><h5>{{ category.name }}</h5></span>
+                                        {% endfor %}
+                                        {% for tag in article.tags.all %}
+                                            <span class="text-primary me-2"><h5>{{ tag.name }}</h5></span>
+                                        {% endfor %}
+                                    </div>
+                                    <a href="{% url 'articles_detail_page' article.pk %}" class="btn btn-primary btn-sm d-inline-block w-auto mt-1"><h5>Детальніше</h5></a>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
                 </div>
-
-                <a href="{% url 'articles_detail_page' article.pk %}"><button class="btn btn-primary"><h4>Детальніше</h4></button></a>
-                <p></p>
+                {% endfor %}
             </div>
-            {% endfor %}
-        </div>
-    </center>
-
-    <center>
-        <div class="position-fixed top-0 start-0 p-3">
-            <span style="font-size: 1.5rem; color: white;">☰</span>
-            <a href="/articles/"><button class="btn text-white bg-dark"><h3>Більше блогів</h3></button></a>
-
-            <span style="font-size: 1.5rem; color: white;">&#128240</span>
-            <a href="/announcements/"><button class="btn text-white bg-dark"><h3>Новинни/Оголошення</h3></button></a>
-        </div>
-    </center>
-
-    <div class="position-fixed top-0 end-0 p-3 shadow" style="z-index: 1050; background-color: dark; border: 1px solid white; color: white;">
-        <div class="d-flex align-items-center gap-3">
-            <h2 class="mb-0">Вхід та реєстрація</h2>
-            {% if user.is_authenticated %}
-            <a href="/logout/" class="btn btn-warning">Вихід</a>
-            <a href="/profile/" class="btn btn-info">Профіль</a>
-            {% else %}
-            <a href="/login/" class="btn btn-info">Вхід</a>
-            {% endif %}
-            <a href="/registration/" class="btn btn-secondary">Реєстрація</a>
         </div>
     </div>
 

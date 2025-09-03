@@ -32,19 +32,28 @@
                         <div class="col-12 mb-3">
                             <div class="card shadow-sm">
                                 <div class="card-body">
-                                    {%if article.image%}
-                                        <img src="{{ article.image.url }}" class="img-fluid mb-2" alt="{{ article.name }}">
-                                    {% endif %}
                                     <h4 class="card-title">{{ article.name }}</h4>
-                                    <div class="mb-2">
-                                        {% for category in article.category.all %}
-                                            <span class="badge bg-secondary me-1">{{ category.name }}</span>
-                                        {% endfor %}
-                                        {% for tag in article.tags.all %}
-                                            <span class="text-primary me-2">#{{ tag.name }}</span>
-                                        {% endfor %}
+
+                                    <div class="row g-2 align-items-start">
+                                        {% if article.image %}
+                                        <div class="col-md-4">
+                                            <img src="{{ article.image.url }}" class="img-fluid mb-2" alt="{{ article.name }}" style="width:350px;height:350px;">
+                                        </div>
+                                        {% endif %}
+
+                                        <div class="col-md-8">
+                                            <div class="mb-2">
+                                                {% for category in article.category.all %}
+                                                    <span class="badge bg-secondary me-1">{{ category.name }}</span>
+                                                {% endfor %}
+                                                {% for tag in article.tags.all %}
+                                                    <span class="text-primary me-2">#{{ tag.name }}</span>
+                                                {% endfor %}
+                                            </div>
+                                            <a href="{% url 'articles_detail_page' article.pk %}" class="btn btn-primary btn-sm mt-1">Детальніше</a>
+                                        </div>
                                     </div>
-                                    <a href="{% url 'articles_detail_page' article.pk %}" class="btn btn-primary">Детальніше</a>
+
                                 </div>
                             </div>
                         </div>
@@ -55,7 +64,7 @@
 
                     <div class="pagination mt-3 d-flex align-items-center">
                         {% if page_obj.has_previous %}
-                            <button class="btn me-2 btn-outline-primary page-btn" data-page="{{ page_obj.previous_page_number }}">Попереня</button>
+                            <button class="btn me-2 btn-outline-primary page-btn" data-page="{{ page_obj.previous_page_number }}">Попередня</button>
                         {% endif %}
 
                         <span class="mx-2">Сторінка {{ page_obj.number }} з {{ page_obj.paginator.num_pages }}</span>
