@@ -12,6 +12,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from blog.mixins import UserIsAdminMixin, UserIsOwnerMixin, UserIsWriterMixin
 from django.urls import reverse, reverse_lazy
+from django.core.mail import send_mail
+from django.conf import settings
 
 class Login_View(FormView):
     template_name = "Login.html"
@@ -118,7 +120,22 @@ class Article_Create_View(LoginRequiredMixin, UserIsWriterMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.user = self.request.user
-        return super().form_valid(form)
+        response = super().form_valid(form)
+
+        subscribers = self.request.user.subscribers.all()
+
+        if subscribers.exists():
+            emails = [subscriber.email for subscriber in subscribers if subscriber.email]
+
+            send_mail(
+                subject="Вийшов новий блог!",
+                message=f"Автор {self.request.user.full_name()} випустив новий блог: {form.instance.name}",
+                from_email=settings.EMAIL_HOST_USER,
+                recipient_list=emails,
+                fail_silently=True,
+            )
+
+        return response
 
 class Article_Detail_View(LoginRequiredMixin, DetailView):
     model = Article
