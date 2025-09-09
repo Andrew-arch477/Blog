@@ -43,9 +43,17 @@ python manage.py migrate
 ```
 
 ## How to use
-1. Start the Server
+1. Edit settings
+   - Here you can find how to properly set up your settings for app to send emails https://www.geeksforgeeks.org/python/setup-sending-email-in-django-project/
+
+3. Create a super user
+```bash
+python manage.py createsuperuser
+```
+
+3. Start the Server
 ```bash
 python manage.py runserver
 ```
 
-2. Click the "Register" button and fill out the registration form. Then log in and start using the blog application =)
+4. Click the "Register" button and fill out the registration form. Then log in and start using the blog application =)
