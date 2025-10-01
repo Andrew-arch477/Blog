@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blog</title>
-    <link rel="stylesheet" href="{% static 'styles/first.css' %}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
 </head>
 
@@ -28,7 +27,7 @@
                                 <button class="btn btn-warning">Редагувати</button>
                             </a>
                             <a href="{% url 'comment_delete_page' comment.id %}">
-                                <button class="btn btn-danger">Видалити</button>
+                                <button class="btn btn-danger delete-comment">Видалити</button>
                             </a>
                         </div>
                     </div>
@@ -37,8 +36,20 @@
             {% endfor %}
     </div>
 
+    <div class="pagination mt-3 d-flex align-items-center">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}" class="btn me-2 btn-outline-primary page-btn" data-page="{{ page_obj.previous_page_number }}">Попередня</a>
+        {% endif %}
+
+        <span class="mx-2">Сторінка {{ page_obj.number }} з {{ page_obj.paginator.num_pages }}</span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}" class="btn me-2 btn-outline-primary page-btn" data-page="{{ page_obj.next_page_number }}">Наступна</a>
+        {% endif %}
+    </div>
+
     <p></p>
-    <form id="comment-form" method="POST">
+    <form id="comment-form" method="POST" action="{% url 'comments_page' article.id %}">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit" class="btn btn-success">Надіслати</button>
@@ -48,47 +59,59 @@
         <a href="{% url 'articles_page' %}"><button class="btn btn-secondary">Назад</button></a>
     </center>
 
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+   <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+
+    <!-- 2. Bootstrap JS (optional) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
+            crossorigin="anonymous"></script>
+
+    <!-- 3. Custom JS -->
     <script>
     $(document).ready(function() {
-        $('#comment-form').submit(function(e) {
-            e.preventDefault(); // Prevent page reload
 
+        const commentsUrl = "{% url 'comments_page' article.id %}";
+
+        // AJAX comment submission
+        $('#comment-form').submit(function(e) {
+            e.preventDefault();
             $.ajax({
                 type: 'POST',
-                url: '', // current page
+                url: commentsUrl,
                 data: $(this).serialize(),
                 success: function(response) {
-                    $('#comments-container').append(`
-                        <div class="row comment mb-2" id="comment-${response.id}">
-                            <div class="col-sm-6">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h5 class="card-title">${response.article_name}</h5>
-                                        <h4>${response.user}</h4>
-                                        <p class="card-text">${response.text}</p>
-                                        <a href="/comment_to_article/comment_update/${response.id}/">
-                                            <button class="btn btn-warning">Редагувати</button>
-                                        </a>
-                                        <a href="/comment_to_article/comment_delete/${response.id}/">
-                                            <button class="btn btn-danger">Видалити</button>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    `);
-                    $('#comment-form')[0].reset(); // Clear form
+                    let pageToLoad = response.page || 1;
+                    loadComments(pageToLoad);
+                    $('#comment-form')[0].reset();
                 },
                 error: function() {
-                    alert('Помилка! Спробуйте ще раз.');
+                    alert("Помилка при додаванні коментаря!");
                 }
             });
         });
+
+        // Pagination clicks (delegated handler)
+        $(document).on("click", ".page-btn", function(e) {
+            e.preventDefault();
+            let page = $(this).data("page");
+            loadComments(page);
+        });
+
+        // Function to load a specific page of comments
+        function loadComments(page) {
+            $.get(commentsUrl + "?page=" + page, function(data) {
+                let parser = new DOMParser();
+                let doc = parser.parseFromString(data, "text/html");
+
+                let newComments = doc.querySelector("#comments-container").innerHTML;
+                let newPagination = doc.querySelector(".pagination").innerHTML;
+
+                document.querySelector("#comments-container").innerHTML = newComments;
+                document.querySelector(".pagination").innerHTML = newPagination;
+            });
+        }
+
     });
     </script>
-
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
 
 </body>

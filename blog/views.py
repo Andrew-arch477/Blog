@@ -1,5 +1,5 @@
-from django.shortcuts import get_object_or_404, redirect
-from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.http import HttpResponseRedirect, JsonResponse
 from django.core.paginator import Paginator, EmptyPage
 from django.template.loader import render_to_string
 from django.views.generic.edit import FormView, DeleteView, UpdateView, CreateView
@@ -173,29 +173,46 @@ class Article_Delete_View(LoginRequiredMixin, UserIsOwnerMixin, DeleteView):
     success_url = "/articles/"
 
 class Comment_View(LoginRequiredMixin, CreateView):
-    template_name = 'Comments_For_Article.html'
+    template_name = "Comments_For_Article.html"
     form_class = Comment_Form
 
     def dispatch(self, request, *args, **kwargs):
         self.article = get_object_or_404(Article, pk=self.kwargs['pk'])
         return super().dispatch(request, *args, **kwargs)
-    
+
     def form_valid(self, form):
         form.instance.user = self.request.user
         form.instance.article = self.article
-        comment = form.save()
+        form.save()
 
-        return JsonResponse({
-            'id': form.instance.id,
-            'user': form.instance.user.username,
-            'text': form.instance.text,
-            'article_name': form.instance.article.name
-        })
+        comments = Comment.objects.filter(article=self.article).order_by('id')
+        paginator = Paginator(comments, 5)
+        last_page = paginator.num_pages
+
+        if self.request.headers.get("x-requested-with") == "XMLHttpRequest":
+            return JsonResponse({"page": last_page})
+
+        return HttpResponseRedirect(
+            f"{reverse('comments_page', kwargs={'pk': self.article.pk})}?page={last_page}"
+        )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
+        comments = Comment.objects.filter(article=self.article).order_by('id')
+        paginator = Paginator(comments, 5)
+
+        page_number = self.request.GET.get("page")
+        if not page_number or not str(page_number).isdigit():
+            page_number = 1
+        else:
+            page_number = int(page_number)
+
+        page_obj = paginator.get_page(page_number)
+
         context['article'] = self.article
-        context['comments'] = Comment.objects.filter(article=self.article)
+        context['comments'] = page_obj
+        context['page_obj'] = page_obj
         return context
 
 class Comment_Update_View(LoginRequiredMixin, UserIsOwnerMixin, UpdateView):
