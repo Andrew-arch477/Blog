@@ -20,7 +20,28 @@
             <div class="col-md-4">
                 <h3>Фільтрація</h3>
                 <form id="filter-form" method="GET">
-                    {{ form.as_p }}
+                    <div class="form-group">
+                        <label>Назва блогу</label>
+                        <div class="form-control" id="exampleFormControlInput1">{{ form.name }}</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Стадія готовості</label>
+                        <div class="form-control" id="exampleFormControlSelect1">{{ form.stage }}</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Категорія</label>
+                        <div class="form-control" id="exampleFormControlSelect2">{{ form.category }}</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Тег</label>
+                        <div class="form-control" id="exampleFormControlSelect2">{{ form.tags }}</div>
+                    </div>
+
+                    <P></P>
+
                     <button type="submit" class="btn btn-primary w-100">Шукати</button>
                 </form>
             </div>

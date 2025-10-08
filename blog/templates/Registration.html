@@ -19,7 +19,46 @@
             {% csrf_token %}
     
             <div id = 'form-group'>
-                {{ form.as_p }}
+                <div class="form-group">
+                    <label>Ім'я користувача</label>
+                    <div class="form-control" id="exampleFormControlInput1">{{ form.username }}</div>
+                </div>
+
+                <p></p>
+
+                <div class="form-group">
+                    <label>Ім'я</label>
+                    <div class="form-control" id="exampleFormControlInput1">{{ form.first_name }}</div>
+                </div>
+
+                <p></p>
+
+                <div class="form-group">
+                    <label>Прізвище</label>
+                    <div class="form-control" id="exampleFormControlInput1">{{ form.last_name }}</div>
+                </div>
+
+                <p></p>
+
+                <div class="form-group">
+                    <label>Електронна пошта</label>
+                    <div class="form-control" id="exampleFormControlInput1">{{ form.email }}</div>
+                </div>
+
+                <p></p>
+
+                <div class="form-group">
+                    <label>Пароль</label>
+                    <div class="form-control" id="exampleFormControlInput1">{{ form.password1 }}</div>
+                </div>
+
+                <p></p>
+
+                <div class="form-group">
+                    <label>Повторитти пароль</label>
+                    <div class="form-control" id="exampleFormControlInput1">{{ form.password2 }}</div>
+                </div>
+
                 <p></p>
                 <button type="submit", class="btn btn-primary">Зареєструватися</button>
             </div>

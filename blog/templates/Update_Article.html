@@ -21,9 +21,50 @@
                 <form method="POST", enctype="multipart/form-data">
                     {% csrf_token %}
                     <div id="form-group" class="mb-3">
-                        {{ form.as_p }}
+                        <div class="form-group">
+                            <div class="form-group">
+                                <label>Назва блогу</label>
+                                <div class="form-control" id="exampleFormControlInput1">{{ form.name }}</div>
+                            </div>
+
+                            <p></p>
+
+                            <div class="form-group">
+                                <label>Текст</label>
+                                <div class="form-control" id="exampleFormControlInput1">{{ form.text }}</div>
+                            </div>
+
+                            <p></p>
+
+                            <div class="form-group">
+                                <label for="exampleFormControlFile1">Фото</label>
+                                <div class="form-control-file" id="exampleFormControlFile1">{{ form.image }}</div>
+                            </div>
+
+                            <p></p>
+
+                            <div class="form-group">
+                                <label>Категорія</label>
+                                <div class="form-control" id="exampleFormControlSelect2">{{ form.category }}</div>
+                            </div>
+
+                            <p></p>
+
+                            <div class="form-group">
+                                <label>Тег</label>
+                                <div class="form-control" id="exampleFormControlSelect2">{{ form.tags }}</div>
+                            </div>
+
+                            <p></p>
+
+                            <div class="form-group">
+                                <label>Стадія готовості</label>
+                                <div class="form-control" id="exampleFormControlSelect1">{{ form.stage }}</div>
+                            </div>
                     </div>
 
+                    <p></p>
+                    
                     <div class="d-flex justify-content-center gap-3">
                         <button type="submit" class="btn btn-warning">Оновити</button>
                         <a href="{% url 'articles_page' %}" class="btn btn-secondary">Назад</a>
